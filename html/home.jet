@@ -36,6 +36,9 @@
                 <input type="text" name="message" id="message" class="form-control" autocomplete="off"/>
             </div>
 
+            <hr/>
+            <a href="javascript:void(0);" class="btn btn-outline-secondary">Send Message</a>
+
             <input type="hidden" name="action" id="action"/>
 
             <hr/>
@@ -68,6 +71,20 @@
         socket.send(JSON.stringify(jsonData));
     }
 
+    function renderUsers(data) {
+        let ul = document.getElementById("online_users");
+        // Clean users list
+        while (ul.firstChild) ul.removeChild(ul.firstChild);
+
+        if (data.connected_users.length > 0) {
+            data.connected_users.forEach(function(user) {
+                let li = document.createElement("li");
+                li.appendChild(document.createTextNode(user));
+                ul.appendChild(li);
+            });
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         socket = new WebSocket("ws://127.0.0.1:8080/ws");
 
@@ -88,18 +105,9 @@
             console.log("Action is", data.action);
 
             switch (data.action) {
+                case "start_up":
                 case "list_users":
-                    let ul = document.getElementById("online_users");
-                    // Clean users list
-                    while (ul.firstChild) ul.removeChild(ul.firstChild);
-
-                    if (data.connected_users.length > 0) {
-                        data.connected_users.forEach(function(user) {
-                            let li = document.createElement("li");
-                            li.appendChild(document.createTextNode(user));
-                            ul.appendChild(li);
-                        });
-                    }
+                    renderUsers(data);
                     break;
             }
         };

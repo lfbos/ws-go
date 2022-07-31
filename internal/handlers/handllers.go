@@ -65,7 +65,9 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	log.Println("Client connected to endpoint")
 
 	var response WsJsonResponse
+	response.Action = "start_up"
 	response.Message = `<em><small>Connected to server</small></em>`
+	response.ConnectedUsers = getUserList()
 
 	conn := WebSocketConnection{Conn: ws}
 	clients[conn] = ""
